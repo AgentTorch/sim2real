@@ -107,7 +107,7 @@ def parse_substeps(pretty_config):
           'generator': observation['func'],
           'arguments': None,
           'input_variables': dict(zip(
-            [x.partition('/')[2] for x in observation['observes']],
+            observation['observes'],
             [x if x.startswith('environment/') else f'agents/{x}' for x in observation['observes']],
           )),
           'output_variables': observation['produces']
@@ -119,7 +119,7 @@ def parse_substeps(pretty_config):
           'generator': action['func'],
           'arguments': None,
           'input_variables': dict(zip(
-            [x.partition('/')[2] for x in action['requires']],
+            action['requires'],
             [x if x.startswith('environment/') else f'agents/{x}' for x in action['requires']],
           )),
           'output_variables': action['decides']
@@ -131,10 +131,10 @@ def parse_substeps(pretty_config):
           'generator': transition['func'],
           'arguments': None,
           'input_variables': dict(zip(
-            [x.partition('/')[2] for x in transition['updates']],
+            transition['updates'],
             [x if x.startswith('environment/') else f'agents/{x}' for x in transition['updates']],
           )),
-          'output_variables': [x.partition('/')[2] for x in transition['updates']]
+          'output_variables': transition['updates']
         }
       }
 

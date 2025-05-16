@@ -5,7 +5,7 @@
 from agent_torch.core import Registry, Runner
 from agent_torch.core.helpers import read_from_file
 
-from utilities import print_header, print_footer, parse_config
+from utilities import *
 from substeps import *
 
 CONFIG_FILE = 'config/solar.yaml'
@@ -32,8 +32,11 @@ runner.init()
 print('running simulation...')
 
 steps = config['simulation']['steps']
-for _ in range(steps):
+for step in range(steps):
   runner.step(1)
+
+  current_state = runner.state_trajectory[-1][-1]
+  inspect_tensor(f'state at step {step}', current_state)
 
 # say bye :)
 print_footer()

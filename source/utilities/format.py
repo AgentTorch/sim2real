@@ -42,7 +42,7 @@ def inspect_tensor(name, tensor_dict, parent=None):
       # Print tensor details
       formatted_tensor = format_tensor(value)
       tree.add(
-        f"[cyan]{key}[/cyan] [magenta]{tuple(value.shape)}[/magenta] [green]{{{value.count_nonzero()}}}[/green]: {formatted_tensor}"
+        f"[cyan]{key}[/cyan] [magenta]{tuple(value.shape)}[/magenta] [green]{{{(value != 0 & ~value.isnan()).sum()}}}[/green]: {formatted_tensor}"
       )
     else:
       # Print non-tensor elements normally

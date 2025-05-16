@@ -4,7 +4,7 @@ simulation:
 environment:
   grid_price:
     type: float
-    value: 0.12
+    value: 0.42
   installation_cost:
     type: float
     value: 15000.0 
@@ -17,31 +17,29 @@ environment:
   distance_epsilon:
     type: float
     value: 0.01
+  current_month:
+    type: int
+    value: 1
 
 agents:
   facility:
-    count: 100
+    count: 1565
     properties:
       id: int
       latitude: float
       longitude: float
-      solar_production_kwh: float
-      energy_demand_kwh: float
+      solar_production_kwh: array, 12, float
+      energy_demand_kwh: array, 12, float
 
   household:
-    count: 100
+    count: 3435
     properties:
       id: int
-      community_id: int
       latitude: float
       longitude: float
-      demand_profile: array, 12, float
       has_solar: boolean
       adoption_propensity: float
-      received_excess_energy: float
       annual_savings: float
-      expected_return_on_investment: float
-      adoption_decision: boolean
 
 substeps:
   - name: solar_diffusion_and_adoption
@@ -51,6 +49,7 @@ substeps:
       name: gather_solar_inputs
       func: GatherSolarAndHouseholdData
       observes:
+        - environment/current_month
         - facility/latitude
         - facility/longitude
         - facility/solar_production_kwh
@@ -79,9 +78,7 @@ substeps:
         - environment/diffusion_radius
         - environment/distance_epsilon
       decides:
-        - received_excess_energy
         - annual_savings
-        - expected_return_on_investment
         - adoption_decision
 
     transition:
@@ -89,3 +86,4 @@ substeps:
       func: UpdateHouseholdSolarAdoption
       updates:
         - household/has_solar
+        - household/annual_savings
