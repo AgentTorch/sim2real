@@ -1,0 +1,91 @@
+simulation:
+  steps: 12
+
+environment:
+  grid_price:
+    type: float
+    value: 0.12
+  installation_cost:
+    type: float
+    value: 15000.0 
+  maintenance_cost:
+    type: float
+    value: 200.0
+  diffusion_radius:
+    type: float
+    value: 5.0 
+  distance_epsilon:
+    type: float
+    value: 0.01
+
+agents:
+  facility:
+    count: 100
+    properties:
+      id: int
+      latitude: float
+      longitude: float
+      solar_production_kwh: float
+      energy_demand_kwh: float
+
+  household:
+    count: 100
+    properties:
+      id: int
+      community_id: int
+      latitude: float
+      longitude: float
+      demand_profile: array, 12, float
+      has_solar: boolean
+      adoption_propensity: float
+      received_excess_energy: float
+      annual_savings: float
+      expected_return_on_investment: float
+      adoption_decision: boolean
+
+substeps:
+  - name: solar_diffusion_and_adoption
+    agent: household
+
+    observation:
+      name: gather_solar_inputs
+      func: GatherSolarAndHouseholdData
+      observes:
+        - facility/latitude
+        - facility/longitude
+        - facility/solar_production_kwh
+        - facility/energy_demand_kwh
+        - household/latitude
+        - household/longitude
+        - household/has_solar
+        - household/adoption_propensity
+      produces:
+        - facility_latitudes
+        - facility_longitudes
+        - facility_solar_productions
+        - facility_energy_demands
+        - household_latitudes
+        - household_longitudes
+        - household_has_solar
+        - household_adoption_propensities
+
+    action:
+      name: diffuse_and_decide
+      func: DiffuseSolarExcessAndDecide
+      requires:
+        - environment/grid_price
+        - environment/installation_cost
+        - environment/maintenance_cost
+        - environment/diffusion_radius
+        - environment/distance_epsilon
+      decides:
+        - received_excess_energy
+        - annual_savings
+        - expected_return_on_investment
+        - adoption_decision
+
+    transition:
+      name: update_household_solar_state
+      func: UpdateHouseholdSolarAdoption
+      updates:
+        - household/has_solar

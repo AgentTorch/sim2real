@@ -1,0 +1,7 @@
+# .gitignore
+
+.venv/
+build/
+dist/
+vendor/
+__pycache__/
