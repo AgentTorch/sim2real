@@ -1,0 +1,7 @@
+agent_torch==0.6.0
+numpy==2.2.5
+rich==14.0.0
+scikit-learn==1.6.1
+torch==2.7.0
+torch-geometric==2.6.1
+tqdm==4.67.1
